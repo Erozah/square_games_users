@@ -1,0 +1,337 @@
+{
+	"info": {
+		"_postman_id": "7f9a8b1c-3d2e-4a5f-9c0b-1e2d3f4a5b6c",
+		"name": "Square Games - Itération 4 (Users & Games)",
+		"description": "Collection complète de test inter-services pour l'Itération 4 avec gestion des variables et scripts de validation.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "usersBaseUrl",
+			"value": "http://localhost:8081",
+			"type": "string"
+		},
+		{
+			"key": "gamesBaseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		},
+		{
+			"key": "aliceId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "bobId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "gameId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "currentPlayerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "otherPlayerId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "1. Créer Utilisateur Alice (Users API)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"aliceId\", jsonData.id);",
+							"console.log(\"Alice ID enregistré : \" + jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"alice_{{$randomInt}}\",\n    \"email\": \"alice_{{$randomInt}}@example.com\"\n}"
+				},
+				"url": {
+					"raw": "{{usersBaseUrl}}/users",
+					"host": ["{{usersBaseUrl}}"],
+					"path": ["users"]
+				}
+			}
+		},
+		{
+			"name": "2. Créer Utilisateur Bob (Users API)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"bobId\", jsonData.id);",
+							"console.log(\"Bob ID enregistré : \" + jsonData.id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"bob_{{$randomInt}}\",\n    \"email\": \"bob_{{$randomInt}}@example.com\"\n}"
+				},
+				"url": {
+					"raw": "{{usersBaseUrl}}/users",
+					"host": ["{{usersBaseUrl}}"],
+					"path": ["users"]
+				}
+			}
+		},
+		{
+			"name": "3. Vérifier validité Alice (Users API)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"pm.test(\"Body is true\", function () {",
+							"    pm.expect(pm.response.text()).to.include(\"true\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{usersBaseUrl}}/users/{{aliceId}}/valid",
+					"host": ["{{usersBaseUrl}}"],
+					"path": ["users", "{{aliceId}}", "valid"]
+				}
+			}
+		},
+		{
+			"name": "4. Créer Partie avec Alice et Bob (Games API)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201 Created\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"pm.collectionVariables.set(\"gameId\", jsonData.id);",
+							"pm.collectionVariables.set(\"currentPlayerId\", jsonData.currentPlayerId);",
+							"var alice = pm.collectionVariables.get(\"aliceId\");",
+							"var bob = pm.collectionVariables.get(\"bobId\");",
+							"var other = (jsonData.currentPlayerId === alice) ? bob : alice;",
+							"pm.collectionVariables.set(\"otherPlayerId\", other);",
+							"console.log(\"Partie créée ID: \" + jsonData.id + \" | Tour du joueur: \" + jsonData.currentPlayerId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-UserId",
+						"value": "{{aliceId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"gameType\": \"tictactoe\",\n    \"playerCount\": 2,\n    \"boardSize\": 3,\n    \"opponentIds\": [\"{{bobId}}\"]\n}"
+				},
+				"url": {
+					"raw": "{{gamesBaseUrl}}/games",
+					"host": ["{{gamesBaseUrl}}"],
+					"path": ["games"]
+				}
+			}
+		},
+		{
+			"name": "5. Lister les parties d'Alice (Games API)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"var jsonData = pm.response.json();",
+							"var gameId = pm.collectionVariables.get(\"gameId\");",
+							"var found = jsonData.some(function(g) { return g.id === gameId; });",
+							"pm.test(\"La liste contient la partie créée\", function () {",
+							"    pm.expect(found).to.be.true;",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "{{aliceId}}"
+					}
+				],
+				"url": {
+					"raw": "{{gamesBaseUrl}}/games",
+					"host": ["{{gamesBaseUrl}}"],
+					"path": ["games"]
+				}
+			}
+		},
+		{
+			"name": "6. Rejet : Tenter de jouer quand ce n'est pas son tour (403 Forbidden)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 403 Forbidden\", function () {",
+							"    pm.response.to.have.status(403);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-UserId",
+						"value": "{{otherPlayerId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"x\": 0,\n    \"y\": 0\n}"
+				},
+				"url": {
+					"raw": "{{gamesBaseUrl}}/games/{{gameId}}/moves",
+					"host": ["{{gamesBaseUrl}}"],
+					"path": ["games", "{{gameId}}", "moves"]
+				}
+			}
+		},
+		{
+			"name": "7. Jouer un coup valide par le joueur courant (200 OK)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200 OK\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "X-UserId",
+						"value": "{{currentPlayerId}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"x\": 0,\n    \"y\": 0\n}"
+				},
+				"url": {
+					"raw": "{{gamesBaseUrl}}/games/{{gameId}}/moves",
+					"host": ["{{gamesBaseUrl}}"],
+					"path": ["games", "{{gameId}}", "moves"]
+				}
+			}
+		},
+		{
+			"name": "8. Rejet : Requête avec un X-UserId inconnu (401 Unauthorized)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 401 Unauthorized\", function () {",
+							"    pm.response.to.have.status(401);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-UserId",
+						"value": "00000000-0000-0000-0000-000000000000"
+					}
+				],
+				"url": {
+					"raw": "{{gamesBaseUrl}}/games",
+					"host": ["{{gamesBaseUrl}}"],
+					"path": ["games"]
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Square Games - Iteration 4",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

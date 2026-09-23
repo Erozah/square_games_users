@@ -1,0 +1,25 @@
+meta {
+  name: 2. Créer Bob (Users API)
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{usersBaseUrl}}/users
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "username": "bob",
+    "email": "bob@example.com"
+  }
+}
+
+tests {
+  test("Status 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+    bru.setVar("bobId", res.getBody().id);
+  });
+}

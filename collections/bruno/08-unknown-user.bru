@@ -1,0 +1,21 @@
+meta {
+  name: 8. Joueur inconnu -> 401 Unauthorized
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{gamesBaseUrl}}/games
+  body: none
+  auth: none
+}
+
+headers {
+  X-UserId: 00000000-0000-0000-0000-000000000000
+}
+
+tests {
+  test("Status 401 Unauthorized", function() {
+    expect(res.getStatus()).to.equal(401);
+  });
+}

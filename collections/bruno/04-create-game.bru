@@ -1,0 +1,35 @@
+meta {
+  name: 4. Créer Partie avec Alice & Bob (Games API)
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{gamesBaseUrl}}/games
+  body: json
+  auth: none
+}
+
+headers {
+  X-UserId: {{aliceId}}
+}
+
+body:json {
+  {
+    "gameType": "tictactoe",
+    "playerCount": 2,
+    "boardSize": 3,
+    "opponentIds": ["{{bobId}}"]
+  }
+}
+
+tests {
+  test("Status 201 Created", function() {
+    expect(res.getStatus()).to.equal(201);
+    const data = res.getBody();
+    bru.setVar("gameId", data.id);
+    bru.setVar("currentPlayerId", data.currentPlayerId);
+    const other = (data.currentPlayerId === bru.getVar("aliceId")) ? bru.getVar("bobId") : bru.getVar("aliceId");
+    bru.setVar("otherPlayerId", other);
+  });
+}

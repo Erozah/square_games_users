@@ -1,0 +1,25 @@
+meta {
+  name: 5. Lister parties d'Alice (Games API)
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{gamesBaseUrl}}/games
+  body: none
+  auth: none
+}
+
+headers {
+  X-UserId: {{aliceId}}
+}
+
+tests {
+  test("Status 200 OK & contient gameId", function() {
+    expect(res.getStatus()).to.equal(200);
+    const games = res.getBody();
+    const gameId = bru.getVar("gameId");
+    const found = games.some(g => g.id === gameId);
+    expect(found).to.be.true;
+  });
+}
