@@ -12,5 +12,4 @@ public interface UserService {
     Optional<UserDto> getUserById(UUID id);
     void deleteUser(UUID id);
     boolean isUserValid(UUID id);
-    List<UserDto> getAllUsers();
 }

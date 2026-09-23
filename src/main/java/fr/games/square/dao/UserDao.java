@@ -7,9 +7,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserDao {
-    List<UserEntity> findAll();
-    Optional<UserEntity> findById(UUID id);
     UserEntity save(UserEntity user);
+    Optional<UserEntity> findById(UUID id);
     void deleteById(UUID id);
     boolean existsById(UUID id);
 }

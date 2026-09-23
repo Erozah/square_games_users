@@ -10,15 +10,9 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 public class UserEntity {
-
     @Id
-    @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
-
-    @Column(name = "username", nullable = false, unique = true)
     private String username;
-
-    @Column(name = "email", nullable = false)
     private String email;
 
     public UserEntity() {
