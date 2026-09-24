@@ -9,6 +9,7 @@ import java.util.UUID;
 public interface UserDao {
     UserEntity save(UserEntity user);
     Optional<UserEntity> findById(UUID id);
+    Optional<UserEntity> findByUsername(String username);
     void deleteById(UUID id);
     boolean existsById(UUID id);
 }

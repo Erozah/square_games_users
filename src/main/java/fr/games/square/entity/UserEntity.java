@@ -14,6 +14,8 @@ public class UserEntity {
     private UUID id;
     private String username;
     private String email;
+    private String roles = "ROLE_USER";
+    private String password;
 
     public UserEntity() {
     }
@@ -46,5 +48,21 @@ public class UserEntity {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRoles() {
+        return roles;
+    }
+
+    public void setRoles(String roles) {
+        this.roles = roles;
     }
 }

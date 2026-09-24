@@ -176,7 +176,7 @@
 						"value": "application/json"
 					},
 					{
-						"key": "X-UserId",
+						"key": "Authorization: Bearer<token>",
 						"value": "{{aliceId}}"
 					}
 				],
@@ -216,7 +216,7 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "X-UserId",
+						"key": "Authorization: Bearer<token>",
 						"value": "{{aliceId}}"
 					}
 				],
@@ -250,7 +250,7 @@
 						"value": "application/json"
 					},
 					{
-						"key": "X-UserId",
+						"key": "Authorization: Bearer<token>",
 						"value": "{{otherPlayerId}}"
 					}
 				],
@@ -288,7 +288,7 @@
 						"value": "application/json"
 					},
 					{
-						"key": "X-UserId",
+						"key": "Authorization: Bearer<token>",
 						"value": "{{currentPlayerId}}"
 					}
 				],
@@ -304,7 +304,7 @@
 			}
 		},
 		{
-			"name": "8. Rejet : Requête avec un X-UserId inconnu (401 Unauthorized)",
+			"name": "8. Rejet : Requête avec un Authorization: Bearer<token> inconnu (401 Unauthorized)",
 			"event": [
 				{
 					"listen": "test",
@@ -322,7 +322,7 @@
 				"method": "GET",
 				"header": [
 					{
-						"key": "X-UserId",
+						"key": "Authorization: Bearer<token>",
 						"value": "00000000-0000-0000-0000-000000000000"
 					}
 				],

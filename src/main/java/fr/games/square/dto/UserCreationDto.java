@@ -1,5 +1,5 @@
 package fr.games.square.dto;
 
-public record UserCreationDto(String username, String email) {
+public record UserCreationDto(String username, String email, String password) {
 
 }

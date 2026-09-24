@@ -4,6 +4,7 @@ import fr.games.square.dao.UserDao;
 import fr.games.square.dto.UserCreationDto;
 import fr.games.square.dto.UserDto;
 import fr.games.square.entity.UserEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,14 +14,18 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     private final UserDao userDao;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserDao userDao) {
+    public UserServiceImpl(UserDao userDao, PasswordEncoder passwordEncoder) {
         this.userDao = userDao;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public UserDto createUser(UserCreationDto creationDto) {
         UserEntity entity = new UserEntity(UUID.randomUUID(), creationDto.username(), creationDto.email());
+        String hashedPassword = passwordEncoder.encode(creationDto.password());
+        entity.setPassword(hashedPassword);
         UserEntity saved = userDao.save(entity);
         return new UserDto(saved.getId(), saved.getUsername(), saved.getEmail());
     }

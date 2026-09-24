@@ -2,11 +2,13 @@ package fr.games.square.service;
 
 import fr.games.square.dto.UserCreationDto;
 import fr.games.square.dto.UserDto;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Service
 public interface UserService {
     UserDto createUser(UserCreationDto creationDto);
     Optional<UserDto> getUserById(UUID id);

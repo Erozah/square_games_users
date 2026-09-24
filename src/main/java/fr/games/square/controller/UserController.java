@@ -6,6 +6,8 @@ import fr.games.square.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -30,6 +32,7 @@ public class UserController {
     }
 
     @Operation(summary = "Obtenir un utilisateur")
+    @PostAuthorize("hasRole('ADMIN') or returnObject.username() == authentication.name")
     @GetMapping("/{id}")
     public UserDto get(@PathVariable UUID id) {
         return userService.getUserById(id)
@@ -39,6 +42,7 @@ public class UserController {
     @Operation(summary = "Supprimer un utilisateur")
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('ADMIN')")
     public void delete(@PathVariable UUID id) {
         userService.deleteUser(id);
     }
