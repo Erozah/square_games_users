@@ -10,6 +10,8 @@ public interface UserDao {
     UserEntity save(UserEntity user);
     Optional<UserEntity> findById(UUID id);
     Optional<UserEntity> findByUsername(String username);
+    Optional<UserEntity> findByEmail(String email);
+    Optional<UserEntity> findByUsernameOrEmail(String username, String email);
     void deleteById(UUID id);
     boolean existsById(UUID id);
 }

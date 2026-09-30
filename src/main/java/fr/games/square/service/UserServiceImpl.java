@@ -37,6 +37,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public Optional<UserDto> findByIdentifier(String identifier) {
+        if (identifier == null || identifier.isBlank()) {
+            return Optional.empty();
+        }
+        String trimmed = identifier.trim();
+
+        // 1. Tenter par UUID
+        try {
+            UUID id = UUID.fromString(trimmed);
+            Optional<UserDto> byId = getUserById(id);
+            if (byId.isPresent()) {
+                return byId;
+            }
+        } catch (IllegalArgumentException ignored) {
+            // Pas un format UUID, on continue
+        }
+
+        // 2. Tenter par username ou email
+        return userDao.findByUsernameOrEmail(trimmed, trimmed)
+                .map(u -> new UserDto(u.getId(), u.getUsername(), u.getEmail()));
+    }
+
+    @Override
     public void deleteUser(UUID id) {
         userDao.deleteById(id);
     }

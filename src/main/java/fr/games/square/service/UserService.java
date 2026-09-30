@@ -12,6 +12,7 @@ import java.util.UUID;
 public interface UserService {
     UserDto createUser(UserCreationDto creationDto);
     Optional<UserDto> getUserById(UUID id);
+    Optional<UserDto> findByIdentifier(String identifier);
     void deleteUser(UUID id);
     boolean isUserValid(UUID id);
 }

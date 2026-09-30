@@ -56,4 +56,11 @@ public class UserController {
         return true;
     }
 
+    @Operation(summary = "Rechercher un utilisateur par nom, email ou UUID")
+    @GetMapping("/search")
+    public UserDto search(@RequestParam("q") String query) {
+        return userService.findByIdentifier(query)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Utilisateur introuvable"));
+    }
+
 }

@@ -36,7 +36,7 @@ class UserControllerTest {
     @Test
     void userLifecycle_create_get_valid_delete() throws Exception {
         // 1. Create User
-        UserCreationDto creationDto = new UserCreationDto("alice", "alice@example.com");
+        UserCreationDto creationDto = new UserCreationDto("alice", "alice@example.com", "password123");
         String createResponse = mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(creationDto)))
@@ -47,7 +47,7 @@ class UserControllerTest {
                 .andReturn().getResponse().getContentAsString();
 
         UserDto createdUser = objectMapper.readValue(createResponse, UserDto.class);
-        UUID userId = createdUser.getId();
+        UUID userId = createdUser.id();
         assertNotNull(userId);
 
         // 2. Get User by ID
@@ -81,7 +81,7 @@ class UserControllerTest {
 
     @Test
     void createUser_MissingUsername_ReturnsBadRequest() throws Exception {
-        UserCreationDto creationDto = new UserCreationDto("", "test@example.com");
+        UserCreationDto creationDto = new UserCreationDto("", "test@example.com", "password123");
         mockMvc.perform(post("/users")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(creationDto)))
