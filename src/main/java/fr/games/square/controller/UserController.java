@@ -5,6 +5,7 @@ import fr.games.square.dto.UserDto;
 import fr.games.square.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,7 +28,7 @@ public class UserController {
     @Operation(summary = "Créer un utilisateur")
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto create(@RequestBody UserCreationDto dto) {
+    public UserDto create(@Valid @RequestBody UserCreationDto dto) {
         return userService.createUser(dto);
     }
 

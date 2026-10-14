@@ -1,3 +1,5 @@
+[Français](README.md) | [English](README.en.md)
+
 # Users API - Service de gestion des utilisateurs
 
 Application Spring Boot dédiée à la gestion des utilisateurs pour la plateforme Square Games (Itération 4).

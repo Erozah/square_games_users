@@ -4,18 +4,32 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 
 import java.util.UUID;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
+
     @Id
     private UUID id;
+
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
+
+    @Column(unique = true, nullable = false, length = 100)
     private String email;
+
+    @Column(nullable = false)
     private String roles = "ROLE_USER";
+
+    @Column(nullable = false)
     private String password;
+
+    @Version
+    @Column(name = "version", columnDefinition = "bigint default 0")
+    private Long version = 0L;
 
     public UserEntity() {
     }
@@ -64,5 +78,13 @@ public class UserEntity {
 
     public void setRoles(String roles) {
         this.roles = roles;
+    }
+
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 }

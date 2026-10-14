@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
+    username VARCHAR(50) UNIQUE,
+    email VARCHAR(100) UNIQUE,
+    password VARCHAR(255),
+    roles VARCHAR(255),
+    version BIGINT DEFAULT 0
+);
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS version BIGINT DEFAULT 0;

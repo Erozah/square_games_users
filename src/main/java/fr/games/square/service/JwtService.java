@@ -1,27 +1,24 @@
 package fr.games.square.service;
 
+import fr.games.square.security.RsaKeyProvider;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.StringTokenizer;
 import java.util.UUID;
 
 @Service
 public class JwtService {
-    @Value("${jwt.secret}")
-    private String secretKey;
+
+    private final RsaKeyProvider rsaKeyProvider;
 
     @Value("${jwt.expiration:86400000}")
     private long jwtExpiration;
 
-    private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+    public JwtService(RsaKeyProvider rsaKeyProvider) {
+        this.rsaKeyProvider = rsaKeyProvider;
     }
 
     public String generateToken(String username, String roles, UUID userId) {
@@ -30,16 +27,16 @@ public class JwtService {
         return Jwts.builder()
                 .subject(username)
                 .claim("roles", roles)
-                .claim("userId", userId.toString())
-                .issuedAt(new java.util.Date(now))
-                .expiration(new java.util.Date(now + jwtExpiration))
-                .signWith(getSigningKey())
+                .claim("userId", userId != null ? userId.toString() : null)
+                .issuedAt(new Date(now))
+                .expiration(new Date(now + jwtExpiration))
+                .signWith(rsaKeyProvider.getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+                .verifyWith(rsaKeyProvider.getPublicKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
